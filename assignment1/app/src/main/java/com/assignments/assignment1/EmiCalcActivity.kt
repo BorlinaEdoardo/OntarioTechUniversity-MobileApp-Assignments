@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,11 @@ class EmiCalcActivity : AppCompatActivity () {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_emi_calc)
+
+        // Setup back button to return to MainActivity without recreating it
+        findViewById<ImageButton>(R.id.backButton).setOnClickListener {
+            finish() // This closes the current activity and returns to the previous one
+        }
 
         val spinner: Spinner = findViewById(R.id.paymentFrequencySpinner)
         // Create an ArrayAdapter using the string array and a default spinner layout.
@@ -57,7 +63,7 @@ class EmiCalcActivity : AppCompatActivity () {
             if (hasError) return@setOnClickListener
 
             val monthlyPayment = calculateMonthlyPayment(amount!!, interest!!, periodYears!!)
-            resultText.text = String.format(Locale.getDefault(), "Your monthly payment is %.2f", monthlyPayment)
+            resultText.text = String.format("Your monthly payment is %.2f", monthlyPayment)
         }
     }
 
