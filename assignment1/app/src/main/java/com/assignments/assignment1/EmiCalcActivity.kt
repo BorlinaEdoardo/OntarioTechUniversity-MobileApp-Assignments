@@ -26,6 +26,7 @@ class EmiCalcActivity : AppCompatActivity () {
 
         // back button to return to MainActivity
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
+            finish()
         }
 
 

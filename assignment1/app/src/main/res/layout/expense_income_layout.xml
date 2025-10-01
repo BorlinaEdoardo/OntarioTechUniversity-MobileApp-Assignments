@@ -46,6 +46,7 @@
         app:layout_constraintTop_toTopOf="@+id/incOutTitle"
         app:layout_constraintBottom_toBottomOf="@+id/incOutTitle" />
 
+
     <EditText
 
         android:id="@+id/incomeEditText"
