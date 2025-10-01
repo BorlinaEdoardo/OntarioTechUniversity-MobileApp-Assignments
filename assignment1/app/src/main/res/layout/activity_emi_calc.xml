@@ -14,107 +14,180 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-
         android:textSize="28sp"
         android:textStyle="bold"
         android:gravity="center"
-
-        android:text="Mortage Calculator"
+        android:text="Mortgage Calculator"
         android:textColor="@color/white"
         android:background="@color/title_background"
-
-
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Mortgage Amount Title -->
+    <TextView
+        android:id="@+id/mortgageAmountTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:text="Mortgage Amount"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <!-- Mortgage Amount Input -->
     <EditText
         android:id="@+id/mortgageAmountInput"
-        android:layout_width="350dp"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Mortgage Amount"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:hint="Enter mortgage amount"
         android:inputType="numberDecimal"
+        android:autofillHints="creditCardNumber"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/mortgageAmountTitle" />
 
-    <!-- Term Input -->
-    <EditText
-        android:id="@+id/termInput"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
+    <!-- Interest Rate Title -->
+    <TextView
+        android:id="@+id/interestRateTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:hint="Term (years)"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Interest Rate (%)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mortgageAmountInput" />
 
     <!-- Interest Rate Input -->
     <EditText
         android:id="@+id/interestRateInput"
-        android:layout_width="350dp"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Interest Rate (%)"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:hint="Enter interest rate"
         android:inputType="numberDecimal"
+        android:autofillHints="off"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/termInput" />
+        app:layout_constraintTop_toBottomOf="@+id/interestRateTitle" />
+
+    <!-- Amortization Period Title -->
+    <TextView
+        android:id="@+id/amortizationPeriodTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Amortization Period (years)"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/interestRateInput" />
 
     <!-- Amortization period Input -->
     <EditText
         android:id="@+id/amortizationPeriodInput"
-        android:layout_width="350dp"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="Amortization Period (years)"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:hint="Enter amortization period"
         android:inputType="number"
+        android:autofillHints="off"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/interestRateInput" />
+        app:layout_constraintTop_toBottomOf="@+id/amortizationPeriodTitle" />
+
+    <!-- Payment Frequency Title -->
+    <TextView
+        android:id="@+id/paymentFrequencyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Payment Frequency"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/amortizationPeriodInput" />
 
     <!-- Payment Frequency Select -->
     <Spinner
         android:id="@+id/paymentFrequencySpinner"
-        android:layout_width="350dp"
+        style="@style/CustomEditTextStyle"
+        android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/amortizationPeriodInput" />
+        app:layout_constraintTop_toBottomOf="@+id/paymentFrequencyTitle" />
 
     <!-- Calculate Button -->
     <Button
         android:id="@+id/calculateButton"
         android:layout_width="0dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        android:text="Calculate EMI"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:backgroundTint="@color/title_background"
+        android:elevation="8dp"
+        app:cornerRadius="12dp"
+        app:strokeColor="@color/black"
+        app:strokeWidth="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/paymentFrequencySpinner" />
+
+    <!-- Result Text -->
+    <TextView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:id="@+id/resultTextView"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:text="Calculate"
-        android:backgroundTint="@color/button_color"
-        android:textColor="@color/white"
-
-        app:layout_constraintBottom_toTopOf="@+id/paymentFrequencySpinner"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@+id/calculateButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Your EMI will be displayed here"
+        android:clickable="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

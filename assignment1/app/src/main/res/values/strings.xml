@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">assignment1</string>
+
+    <string-array name="payment_frequency_array">
+        <item>Monthly</item>
+        <item>Weekly</item>
+        <item>Rapid Weekly</item>
+        <item>Bi-weekly</item>
+        <item>Rapid Bi-weekly</item>
+        <item>Semi-monthly</item>
+        <item>Rapid Semi-monthly</item>
+    </string-array>
 </resources>
