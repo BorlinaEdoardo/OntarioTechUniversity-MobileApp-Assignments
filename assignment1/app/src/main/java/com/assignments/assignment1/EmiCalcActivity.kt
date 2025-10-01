@@ -1,14 +1,11 @@
 package com.assignments.assignment1
 
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import java.util.Locale
 
 class EmiCalcActivity : AppCompatActivity () {
     // function to calculate monthly payment
@@ -27,23 +24,10 @@ class EmiCalcActivity : AppCompatActivity () {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_emi_calc)
 
-        // Setup back button to return to MainActivity without recreating it
+        // back button to return to MainActivity
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
-            finish() // This closes the current activity and returns to the previous one
         }
 
-        val spinner: Spinner = findViewById(R.id.paymentFrequencySpinner)
-        // Create an ArrayAdapter using the string array and a default spinner layout.
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.payment_frequency_array,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears.
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner.
-            spinner.adapter = adapter
-        }
 
         val amountInput = findViewById<EditText>(R.id.mortgageAmountInput)
         val interestInput = findViewById<EditText>(R.id.interestRateInput)

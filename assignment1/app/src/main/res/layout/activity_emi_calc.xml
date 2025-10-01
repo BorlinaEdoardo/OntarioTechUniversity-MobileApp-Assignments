@@ -137,35 +137,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/amortizationPeriodTitle" />
 
-    <!-- Payment Frequency Title -->
-    <TextView
-        android:id="@+id/paymentFrequencyTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Payment Frequency"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/amortizationPeriodInput" />
-
-    <!-- Payment Frequency Select -->
-    <Spinner
-        android:id="@+id/paymentFrequencySpinner"
-        style="@style/CustomEditTextStyle"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paymentFrequencyTitle" />
-
     <!-- Calculate Button -->
     <Button
         android:id="@+id/calculateButton"
@@ -185,7 +156,7 @@
         app:strokeWidth="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/paymentFrequencySpinner" />
+        app:layout_constraintTop_toBottomOf="@+id/amortizationPeriodInput" />
 
     <!-- Result Text -->
     <TextView

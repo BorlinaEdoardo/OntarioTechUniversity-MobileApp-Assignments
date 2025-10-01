@@ -23,6 +23,11 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button3).setOnClickListener {
             startActivity(Intent(this, EmiCalcActivity::class.java))
         }
+
+        // navigate to ExpenseIncomeActivity on button click
+        findViewById<Button>(R.id.button).setOnClickListener {
+            startActivity(Intent(this, ExpenseIncomeActivity::class.java))
+        }
     }
 
 
