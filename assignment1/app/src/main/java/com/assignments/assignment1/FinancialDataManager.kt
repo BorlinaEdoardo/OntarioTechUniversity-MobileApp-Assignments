@@ -7,40 +7,34 @@ class FinancialDataManager(context: Context) {
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("financial_data", Context.MODE_PRIVATE)
 
-    companion object {
-        private const val KEY_MONTHLY_INCOME = "monthly_income"
-        private const val KEY_MONTHLY_EXPENSES = "monthly_expenses"
-        private const val KEY_MONTHLY_EMI = "monthly_emi"
-    }
-
     // Save monthly income
     fun saveMonthlyIncome(income: Double) {
-        sharedPreferences.edit().putFloat(KEY_MONTHLY_INCOME, income.toFloat()).apply()
+        sharedPreferences.edit().putFloat("monthly_income", income.toFloat()).apply()
     }
 
     // Get monthly income
     fun getMonthlyIncome(): Double {
-        return sharedPreferences.getFloat(KEY_MONTHLY_INCOME, 0.0f).toDouble()
+        return sharedPreferences.getFloat("monthly_income", 0.0f).toDouble()
     }
 
     // Save monthly expenses
     fun saveMonthlyExpenses(expenses: Double) {
-        sharedPreferences.edit().putFloat(KEY_MONTHLY_EXPENSES, expenses.toFloat()).apply()
+        sharedPreferences.edit().putFloat("monthly_expenses", expenses.toFloat()).apply()
     }
 
     // Get monthly expenses
     fun getMonthlyExpenses(): Double {
-        return sharedPreferences.getFloat(KEY_MONTHLY_EXPENSES, 0.0f).toDouble()
+        return sharedPreferences.getFloat("monthly_expenses", 0.0f).toDouble()
     }
 
     // Save monthly EMI
     fun saveMonthlyEMI(emi: Double) {
-        sharedPreferences.edit().putFloat(KEY_MONTHLY_EMI, emi.toFloat()).apply()
+        sharedPreferences.edit().putFloat("monthly_emi", emi.toFloat()).apply()
     }
 
     // Get monthly EMI
     fun getMonthlyEMI(): Double {
-        return sharedPreferences.getFloat(KEY_MONTHLY_EMI, 0.0f).toDouble()
+        return sharedPreferences.getFloat("monthly_emi", 0.0f).toDouble()
     }
 
     // Check if all data is available

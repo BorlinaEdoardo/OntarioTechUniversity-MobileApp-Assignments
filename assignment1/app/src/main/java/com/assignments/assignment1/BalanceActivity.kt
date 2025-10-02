@@ -28,9 +28,29 @@ class BalanceActivity : AppCompatActivity() {
         val emiInput = findViewById<EditText>(R.id.emiEditText)
         val resultText = findViewById<TextView>(R.id.resultTextView)
         val calcBtn = findViewById<Button>(R.id.calculateBalanceButton)
+        val resetBtn = findViewById<Button>(R.id.resetButton)
 
         // Load saved data automatically
         loadSavedData()
+
+        // Reset button listener to clear all preferences and input fields
+        resetBtn.setOnClickListener {
+            // Clear all SharedPreferences data
+            dataManager.clearAllData()
+
+            // Clear all input fields
+            incomeInput.setText("")
+            expensesInput.setText("")
+            emiInput.setText("")
+
+            // Clear result text
+            resultText.text = ""
+
+            // Clear any existing errors
+            incomeInput.error = null
+            expensesInput.error = null
+            emiInput.error = null
+        }
 
         calcBtn.setOnClickListener {
             val income = incomeInput.text.toString().trim().toDoubleOrNull()
@@ -55,13 +75,13 @@ class BalanceActivity : AppCompatActivity() {
                 val finalBalance = income!! - expenses!! - emi!!
 
                 if (finalBalance > 0) {
-                    resultText.text = String.format("✅ POSITIVE BALANCE: +%.2f\nYou have a healthy financial situation!", finalBalance)
+                    resultText.text = String.format("POSITIVE BALANCE: +%.2f", finalBalance)
                     resultText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_green_dark))
                 } else if (finalBalance < 0) {
-                    resultText.text = String.format("⚠️ NEGATIVE BALANCE: %.2f\nYou are spending more than you earn!", finalBalance)
+                    resultText.text = String.format(" NEGATIVE BALANCE: %.2f", finalBalance)
                     resultText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_red_dark))
                 } else {
-                    resultText.text = "📊 BALANCED: 0.00\nYour income exactly matches your expenses!"
+                    resultText.text = "BALANCED: 0.00"
                     resultText.setTextColor(ContextCompat.getColor(this, android.R.color.holo_orange_dark))
                 }
             }
