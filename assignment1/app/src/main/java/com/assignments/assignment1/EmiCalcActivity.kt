@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class EmiCalcActivity : AppCompatActivity () {
+    private lateinit var dataManager: FinancialDataManager
+
     // function to calculate monthly payment
     fun calculateMonthlyPayment(principal: Double, annualInterestRate: Double, termInYears: Int): Double {
         val monthlyInterestRate = annualInterestRate / 100 / 12
@@ -23,6 +25,9 @@ class EmiCalcActivity : AppCompatActivity () {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_emi_calc)
+
+        // Initialize data manager
+        dataManager = FinancialDataManager(this)
 
         // back button to return to MainActivity
         findViewById<ImageButton>(R.id.backButton).setOnClickListener {
@@ -48,6 +53,9 @@ class EmiCalcActivity : AppCompatActivity () {
             if (!hasError) {
                 val monthlyPayment = calculateMonthlyPayment(amount!!, interest!!, periodYears!!)
                 resultText.text = String.format("Your monthly payment is %.2f", monthlyPayment)
+
+                // Save EMI payment to SharedPreferences
+                dataManager.saveMonthlyEMI(monthlyPayment)
             }
         }
     }

@@ -28,6 +28,10 @@
         <activity android:name=".ExpenseIncomeActivity">
 
         </activity>
+
+        <activity android:name=".BalanceActivity">
+
+        </activity>
     </application>
 
 </manifest>

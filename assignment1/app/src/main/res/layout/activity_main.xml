@@ -73,7 +73,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginTop="24dp"
-        android:text="Coming Soon"
+        android:text="Financial Balance"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -82,12 +82,28 @@
         app:cornerRadius="12dp"
         app:strokeColor="@color/black"
         app:strokeWidth="1dp"
-        android:enabled="false"
-        android:alpha="0.6"
+        android:enabled="true"
+        android:alpha="1.0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
+    <!-- Welcome Text -->
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="48dp"
+        android:text="Welcome to your personal finance assistant. Choose an option below to get started."
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

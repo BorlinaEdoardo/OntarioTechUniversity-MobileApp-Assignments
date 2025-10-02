@@ -28,8 +28,11 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button).setOnClickListener {
             startActivity(Intent(this, ExpenseIncomeActivity::class.java))
         }
+
+        // navigate to BalanceActivity on button click
+        findViewById<Button>(R.id.button2).setOnClickListener {
+            startActivity(Intent(this, BalanceActivity::class.java))
+        }
     }
-
-
 
 }

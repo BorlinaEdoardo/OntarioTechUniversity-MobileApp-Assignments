@@ -1,0 +1,55 @@
+package com.assignments.assignment1
+
+import android.content.Context
+import android.content.SharedPreferences
+
+class FinancialDataManager(context: Context) {
+    private val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("financial_data", Context.MODE_PRIVATE)
+
+    companion object {
+        private const val KEY_MONTHLY_INCOME = "monthly_income"
+        private const val KEY_MONTHLY_EXPENSES = "monthly_expenses"
+        private const val KEY_MONTHLY_EMI = "monthly_emi"
+    }
+
+    // Save monthly income
+    fun saveMonthlyIncome(income: Double) {
+        sharedPreferences.edit().putFloat(KEY_MONTHLY_INCOME, income.toFloat()).apply()
+    }
+
+    // Get monthly income
+    fun getMonthlyIncome(): Double {
+        return sharedPreferences.getFloat(KEY_MONTHLY_INCOME, 0.0f).toDouble()
+    }
+
+    // Save monthly expenses
+    fun saveMonthlyExpenses(expenses: Double) {
+        sharedPreferences.edit().putFloat(KEY_MONTHLY_EXPENSES, expenses.toFloat()).apply()
+    }
+
+    // Get monthly expenses
+    fun getMonthlyExpenses(): Double {
+        return sharedPreferences.getFloat(KEY_MONTHLY_EXPENSES, 0.0f).toDouble()
+    }
+
+    // Save monthly EMI
+    fun saveMonthlyEMI(emi: Double) {
+        sharedPreferences.edit().putFloat(KEY_MONTHLY_EMI, emi.toFloat()).apply()
+    }
+
+    // Get monthly EMI
+    fun getMonthlyEMI(): Double {
+        return sharedPreferences.getFloat(KEY_MONTHLY_EMI, 0.0f).toDouble()
+    }
+
+    // Check if all data is available
+    fun hasAllData(): Boolean {
+        return getMonthlyIncome() > 0 && getMonthlyExpenses() > 0 && getMonthlyEMI() > 0
+    }
+
+    // Clear all data
+    fun clearAllData() {
+        sharedPreferences.edit().clear().apply()
+    }
+}

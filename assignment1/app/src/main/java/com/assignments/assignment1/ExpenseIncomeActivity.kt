@@ -8,9 +8,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class ExpenseIncomeActivity : AppCompatActivity() {
+    private lateinit var dataManager: FinancialDataManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.expense_income_layout)
+
+        // Initialize data manager
+        dataManager = FinancialDataManager(this)
 
         // back button to return to MainActivity
         findViewById<ImageButton>(R.id.backButtonExpenseIncome).setOnClickListener {
@@ -34,8 +39,12 @@ class ExpenseIncomeActivity : AppCompatActivity() {
                 incomeInput.error = "Insert a valid income value"; hasError = true
             }
             if (!hasError) {
-                val balance = income!!- expense!!
+                val balance = income!! - expense!!
                 resultText.text = String.format("Your monthly balance without EMI is %.2f", balance)
+
+                // Save income and expenses to SharedPreferences
+                dataManager.saveMonthlyIncome(income)
+                dataManager.saveMonthlyExpenses(expense)
             }
         }
     }
