@@ -37,18 +37,18 @@ class EmiCalcActivity : AppCompatActivity () {
         val calcBtn = findViewById<Button>(R.id.calculateButton)
 
         calcBtn.setOnClickListener {
-            val amount = amountInput.text.toString().trim().replace(',', '.').toDoubleOrNull()
-            val interest = interestInput.text.toString().trim().replace(',', '.').toDoubleOrNull()
+            val amount = amountInput.text.toString().trim().toDoubleOrNull()
+            val interest = interestInput.text.toString().trim().toDoubleOrNull()
             val periodYears = periodInput.text.toString().trim().toIntOrNull()
 
             var hasError = false
             if (amount == null) { amountInput.error = "Insert a valid amount"; hasError = true }
             if (interest == null) { interestInput.error = "Insert interest rate "; hasError = true }
             if (periodYears == null) { periodInput.error = "Insert the amortization period"; hasError = true }
-            if (hasError) return@setOnClickListener
-
-            val monthlyPayment = calculateMonthlyPayment(amount!!, interest!!, periodYears!!)
-            resultText.text = String.format("Your monthly payment is %.2f", monthlyPayment)
+            if (!hasError) {
+                val monthlyPayment = calculateMonthlyPayment(amount!!, interest!!, periodYears!!)
+                resultText.text = String.format("Your monthly payment is %.2f", monthlyPayment)
+            }
         }
     }
 
