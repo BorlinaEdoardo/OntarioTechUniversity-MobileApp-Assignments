@@ -1,5 +1,6 @@
 package com.assignments.assignment1
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -8,14 +9,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class ExpenseIncomeActivity : AppCompatActivity() {
-    private lateinit var dataManager: FinancialDataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.expense_income_layout)
-
-        // Initialize data manager
-        dataManager = FinancialDataManager(this)
 
         // back button to return to MainActivity
         findViewById<ImageButton>(R.id.backButtonExpenseIncome).setOnClickListener {
@@ -43,8 +40,11 @@ class ExpenseIncomeActivity : AppCompatActivity() {
                 resultText.text = String.format("Your monthly balance without EMI is %.2f", balance)
 
                 // Save income and expenses to SharedPreferences
-                dataManager.saveMonthlyIncome(income)
-                dataManager.saveMonthlyExpenses(expense)
+                val sharedPreferences = getSharedPreferences("financial_data", Context.MODE_PRIVATE)
+                val editor = sharedPreferences.edit()
+                editor.putFloat("monthly_income", income.toFloat())
+                editor.putFloat("monthly_expenses", expense.toFloat())
+                editor.apply()
             }
         }
     }

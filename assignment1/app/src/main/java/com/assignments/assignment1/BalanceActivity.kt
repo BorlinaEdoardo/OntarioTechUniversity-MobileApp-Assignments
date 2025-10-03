@@ -1,5 +1,6 @@
 package com.assignments.assignment1
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -9,14 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 
 class BalanceActivity : AppCompatActivity() {
-    private lateinit var dataManager: FinancialDataManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_balance)
-
-        // Initialize data manager
-        dataManager = FinancialDataManager(this)
 
         // back button to return to MainActivity
         findViewById<ImageButton>(R.id.backButtonBalance).setOnClickListener {
@@ -36,7 +33,8 @@ class BalanceActivity : AppCompatActivity() {
         // Reset button listener to clear all preferences and input fields
         resetBtn.setOnClickListener {
             // Clear all SharedPreferences data
-            dataManager.clearAllData()
+            val sharedPreferences = getSharedPreferences("financial_data", Context.MODE_PRIVATE)
+            sharedPreferences.edit().clear().apply()
 
             // Clear all input fields
             incomeInput.setText("")
@@ -93,26 +91,28 @@ class BalanceActivity : AppCompatActivity() {
         val expensesInput = findViewById<EditText>(R.id.expensesEditText)
         val emiInput = findViewById<EditText>(R.id.emiEditText)
 
+        val sharedPreferences = getSharedPreferences("financial_data", Context.MODE_PRIVATE)
+
         // Load saved income
-        val savedIncome = dataManager.getMonthlyIncome()
+        val savedIncome = sharedPreferences.getFloat("monthly_income", 0.0f).toDouble()
         if (savedIncome > 0) {
             incomeInput.setText(savedIncome.toString())
         }
 
         // Load saved expenses
-        val savedExpenses = dataManager.getMonthlyExpenses()
+        val savedExpenses = sharedPreferences.getFloat("monthly_expenses", 0.0f).toDouble()
         if (savedExpenses > 0) {
             expensesInput.setText(savedExpenses.toString())
         }
 
         // Load saved EMI
-        val savedEMI = dataManager.getMonthlyEMI()
+        val savedEMI = sharedPreferences.getFloat("monthly_emi", 0.0f).toDouble()
         if (savedEMI > 0) {
             emiInput.setText(savedEMI.toString())
         }
 
         // If all data is available, calculate automatically
-        if (dataManager.hasAllData()) {
+        if (savedIncome > 0 && savedExpenses > 0 && savedEMI > 0) {
             findViewById<Button>(R.id.calculateBalanceButton).performClick()
         }
     }
