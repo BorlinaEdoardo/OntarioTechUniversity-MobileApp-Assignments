@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 
 class EmiCalcActivity : AppCompatActivity () {
 
@@ -50,9 +51,9 @@ class EmiCalcActivity : AppCompatActivity () {
                 val monthlyPayment = calculateMonthlyPayment(amount!!, interest!!, periodYears!!)
                 resultText.text = String.format("Your monthly payment is %.2f", monthlyPayment)
 
-                // Save EMI payment to SharedPreferences
+
                 val sharedPreferences = getSharedPreferences("financial_data", Context.MODE_PRIVATE)
-                sharedPreferences.edit().putFloat("monthly_emi", monthlyPayment.toFloat()).apply()
+                sharedPreferences.edit { putFloat("monthly_emi", monthlyPayment.toFloat()) }
             }
         }
     }

@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 
 class ExpenseIncomeActivity : AppCompatActivity() {
 
@@ -39,12 +40,11 @@ class ExpenseIncomeActivity : AppCompatActivity() {
                 val balance = income!! - expense!!
                 resultText.text = String.format("Your monthly balance without EMI is %.2f", balance)
 
-                // Save income and expenses to SharedPreferences
                 val sharedPreferences = getSharedPreferences("financial_data", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-                editor.putFloat("monthly_income", income.toFloat())
-                editor.putFloat("monthly_expenses", expense.toFloat())
-                editor.apply()
+                sharedPreferences.edit {
+                    putFloat("monthly_income", income.toFloat())
+                    putFloat("monthly_expenses", expense.toFloat())
+                }
             }
         }
     }

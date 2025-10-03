@@ -27,24 +27,21 @@ class BalanceActivity : AppCompatActivity() {
         val calcBtn = findViewById<Button>(R.id.calculateBalanceButton)
         val resetBtn = findViewById<Button>(R.id.resetButton)
 
-        // Load saved data automatically
+        // Load saved data
         loadSavedData()
 
         // Reset button listener to clear all preferences and input fields
         resetBtn.setOnClickListener {
-            // Clear all SharedPreferences data
             val sharedPreferences = getSharedPreferences("financial_data", Context.MODE_PRIVATE)
             sharedPreferences.edit().clear().apply()
 
-            // Clear all input fields
+            // clear all the values
             incomeInput.setText("")
             expensesInput.setText("")
             emiInput.setText("")
 
-            // Clear result text
             resultText.text = ""
 
-            // Clear any existing errors
             incomeInput.error = null
             expensesInput.error = null
             emiInput.error = null
@@ -93,25 +90,25 @@ class BalanceActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences("financial_data", Context.MODE_PRIVATE)
 
-        // Load saved income
+        // income
         val savedIncome = sharedPreferences.getFloat("monthly_income", 0.0f).toDouble()
         if (savedIncome > 0) {
             incomeInput.setText(savedIncome.toString())
         }
 
-        // Load saved expenses
+        // expenses
         val savedExpenses = sharedPreferences.getFloat("monthly_expenses", 0.0f).toDouble()
         if (savedExpenses > 0) {
             expensesInput.setText(savedExpenses.toString())
         }
 
-        // Load saved EMI
+        // EMI
         val savedEMI = sharedPreferences.getFloat("monthly_emi", 0.0f).toDouble()
         if (savedEMI > 0) {
             emiInput.setText(savedEMI.toString())
         }
 
-        // If all data is available, calculate automatically
+        // calculate (if all values are present)
         if (savedIncome > 0 && savedExpenses > 0 && savedEMI > 0) {
             findViewById<Button>(R.id.calculateBalanceButton).performClick()
         }
