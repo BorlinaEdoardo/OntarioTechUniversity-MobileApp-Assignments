@@ -2,10 +2,14 @@ package com.assignment.assignment2.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteOpenHelper
+import android.database.sqlite.SQLiteDatabase
 
 class DatabaseHelper(context: Context): SQLiteOpenHelper(context, "locations.db", null, 1) {
-    override fun onCreate(db: android.database.sqlite.SQLiteDatabase?) {
-        db?.execSQL(
+
+    private var isFirstCreation = false
+
+    override fun onCreate(db: SQLiteDatabase) {
+        db.execSQL(
             """
             CREATE TABLE IF NOT EXISTS Locations (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,14 +19,36 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, "locations.db"
             )
             """
         )
-
+        isFirstCreation = true
+        insertSampleData(db)
     }
 
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS Locations")
+        onCreate(db)
+    }
 
-    override fun onUpgrade(db: android.database.sqlite.SQLiteDatabase?, oldVersion: Int, newVersion: Int){
-        // Delete and recreate the table
-        db?.execSQL("DROP TABLE IF EXISTS Locations")
-        onCreate(db!!)
+    // Insert sample data using the provided database instance
+    private fun insertSampleData(db: SQLiteDatabase?) {
+        if (db == null) return
+
+        val sampleLocations = listOf(
+            Location(address = "Toronto, ON", latitude = 43.65107, longitude = -79.347015),
+            Location(address = "Mississauga, ON", latitude = 43.589045, longitude = -79.644119),
+            Location(address = "Brampton, ON", latitude = 43.731548, longitude = -79.762417),
+            Location(address = "Markham, ON", latitude = 43.8561, longitude = -79.337),
+            Location(address = "Vaughan, ON", latitude = 43.8372, longitude = -79.5083),
+            Location(address = "Richmond Hill, ON", latitude = 43.8828, longitude = -79.4403),
+            Location(address = "Oakville, ON", latitude = 43.4675, longitude = -79.6877),
+            Location(address = "Burlington, ON", latitude = 43.3255, longitude = -79.799),
+            Location(address = "Milton, ON", latitude = 43.5186, longitude = -79.8774),
+            Location(address = "Ajax, ON", latitude = 43.8503, longitude = -79.0204)
+        )
+
+        for (location in sampleLocations) {
+            val values = location.toContentValues()
+            db.insert("Locations", null, values)
+        }
     }
 
     // insert sample data (10 locations) in the greater toronto area

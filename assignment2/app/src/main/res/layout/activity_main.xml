@@ -33,7 +33,7 @@
         android:orientation="horizontal"
         android:padding="4dp"
         app:layout_constraintTop_toBottomOf="@id/titleTextView"
-        app:layout_contraingtBottom_toTopOf="@+id/locationsRecyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/locationsRecyclerView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 

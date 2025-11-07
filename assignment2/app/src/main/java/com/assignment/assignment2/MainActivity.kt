@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val rv: RecyclerView = findViewById(R.id.locationsRecyclerView)
+        val searchBox: EditText = findViewById(R.id.search_bar)
 
         adapter = LocationAdapter()
         rv.layoutManager = LinearLayoutManager(this)
