@@ -62,10 +62,10 @@ class DatabaseHelper(context: Context): SQLiteOpenHelper(context, "locations.db"
         return locations
     }
 
-    // Get Location by ID
-    fun getLocationById(id: Int): Location? {
+    // Get Location by Address
+    fun getLocationByAddress(address: String): Location? {
         val db = readableDatabase
-        val cursor = db.rawQuery("SELECT * FROM Locations WHERE id = ?", arrayOf(id.toString()))
+        val cursor = db.rawQuery("SELECT * FROM Locations WHERE address = ?", arrayOf(address))
         var location: Location? = null
         if (cursor.moveToFirst()) {
             location = Location.getFromCursor(cursor)

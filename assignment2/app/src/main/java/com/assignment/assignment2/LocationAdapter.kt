@@ -45,12 +45,15 @@ class LocationAdapter : RecyclerView.Adapter<LocationAdapter.LocationVH>() {
     }
 
     fun filter(query: String) {
-        val q = query.trim().lowercase()
+        val q = query.trim()
+        val location = databaseHelper.getLocationByAddress(q)
+
         visible.clear()
         if (q.isEmpty()) {
             visible.addAll(all)
         } else {
-            visible.addAll(all.filter { it.address.lowercase().contains(q) })
+            if (location != null)
+                visible.add(location)
         }
         notifyDataSetChanged()
     }

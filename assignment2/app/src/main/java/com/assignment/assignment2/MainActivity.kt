@@ -1,5 +1,6 @@
 package com.assignment.assignment2
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.assignment.assignment2.database.DatabaseHelper
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
     private lateinit var databaseHelper: DatabaseHelper
@@ -23,6 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         val rv: RecyclerView = findViewById(R.id.locationsRecyclerView)
         val searchBox: EditText = findViewById(R.id.search_bar)
+        val fabAddLocation: FloatingActionButton = findViewById(R.id.fabAddLocation)
 
         adapter = LocationAdapter()
         rv.layoutManager = LinearLayoutManager(this)
@@ -30,11 +33,17 @@ class MainActivity : AppCompatActivity() {
 
         searchBox.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
                 adapter.filter(s?.toString() ?: "")
             }
-            override fun afterTextChanged(s: Editable?) {}
         })
+
+        // navigate to AddLocationActivity
+        fabAddLocation.setOnClickListener {
+            val intent = Intent(this, AddLocationActivity::class.java)
+            startActivity(intent)
+        }
 
 
     }
