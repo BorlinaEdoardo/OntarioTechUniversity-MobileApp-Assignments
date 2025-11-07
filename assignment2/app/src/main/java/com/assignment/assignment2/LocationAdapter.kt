@@ -95,7 +95,15 @@ class LocationAdapter : RecyclerView.Adapter<LocationAdapter.LocationVH>() {
 
 
             card.setOnClickListener {
-                // TODO: Navigate to detail screen
+                // navigate to MapActivity
+                val context = itemView.context
+                val intent = android.content.Intent(context, MapActivity::class.java)
+
+                // pass the extra values to the intent
+                intent.putExtra("address", location.address)
+                intent.putExtra("latitude", location.latitude)
+                intent.putExtra("longitude", location.longitude)
+                context.startActivity(intent)
             }
 
             editButton.setOnClickListener{
