@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         databaseHelper = DatabaseHelper(this)
 
+        adapter.setDatabaseHelper(databaseHelper)
         adapter.submit(databaseHelper.getAllLocations())
     }
 }

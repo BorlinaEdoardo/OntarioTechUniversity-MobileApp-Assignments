@@ -5,4 +5,8 @@
     <color name="background_light">#F3F6FE</color>
     <color name="title_background">#3f8096</color>
     <color name="delete_button_color">#90E63F3F</color>
+    <color name="button_color">#9575CD</color>
+    <color name="text_secondary">#757575</color>
+    <color name="text_primary">#212121</color>
+    <color name="card_background">#2923A1D9</color>
 </resources>
