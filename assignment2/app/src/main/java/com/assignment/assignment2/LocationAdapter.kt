@@ -4,20 +4,18 @@ package com.assignment.assignment2
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.assignment.assignment2.R
 import com.assignment.assignment2.database.Location
 
-class LocationAdapter : RecyclerView.Adapter<LocationAdapter.RestaurantVH>() {
+class LocationAdapter : RecyclerView.Adapter<LocationAdapter.LocationVH>() {
 
-    private val all = mutableListOf<Restaurant>()
-    private val visible = mutableListOf<Restaurant>()
+    private val all = mutableListOf<Location>()
+    private val visible = mutableListOf<Location>()
 
-    fun submit(list: List<Restaurant>) {
+    fun submit(list: List<Location>) {
         all.clear()
         all.addAll(list)
         filter("")
@@ -29,54 +27,38 @@ class LocationAdapter : RecyclerView.Adapter<LocationAdapter.RestaurantVH>() {
         if (q.isEmpty()) {
             visible.addAll(all)
         } else {
-            visible.addAll(all.filter { it.name.lowercase().contains(q) })
+            visible.addAll(all.filter { it.address.lowercase().contains(q) })
         }
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RestaurantVH {
-        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_restaurant, parent, false)
-        return RestaurantVH(v)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationVH {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_location, parent, false)
+        return LocationVH(v)
     }
 
     override fun getItemCount(): Int = visible.size
 
-    override fun onBindViewHolder(holder: RestaurantVH, position: Int) {
+    override fun onBindViewHolder(holder: LocationVH, position: Int) {
         holder.bind(visible[position])
     }
 
-    class RestaurantVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class LocationVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val card: CardView = itemView as CardView
-        private val image: ImageView = itemView.findViewById(R.id.restaurantImage)
-        private val favoriteButton: ImageButton = itemView.findViewById(R.id.favoriteButton)
-        private val name: TextView = itemView.findViewById(R.id.restaurantName)
-        private val rating: TextView = itemView.findViewById(R.id.restaurantRating)
-        private val cuisine: TextView = itemView.findViewById(R.id.restaurantCuisine)
+        private val id: TextView = itemView.findViewById(R.id.idTextView)
+        private val address: TextView = itemView.findViewById(R.id.addressEditText)
+        private val latitude: TextView = itemView.findViewById(R.id.latitudeEditText)
+        private val longitude: TextView = itemView.findViewById(R.id.longitudeEditText)
 
-        fun bind(restaurant: Restaurant) {
-            name.text = restaurant.name
-            rating.text = String.format("%.1f", restaurant.rating ?: 4.5f)
-            cuisine.text = restaurant.shortDescription ?: "Restaurant"
-
-            // Set sample image (same for all restaurants for now)
-            image.setImageResource(R.drawable.sample_restaurant)
-
-            // Handle favorite button click
-            var isFavorite = false
-            favoriteButton.setOnClickListener {
-                isFavorite = !isFavorite
-                if (isFavorite) {
-                    favoriteButton.setImageResource(R.drawable.ic_heart_filled)
-                } else {
-                    favoriteButton.setImageResource(R.drawable.ic_heart_outline)
-                }
-            }
+        fun bind(location: Location) {
+            id.text = location.id.toString()
+            address.text = location.address
+            latitude.text = location.latitude.toString()
+            longitude.text = location.longitude.toString()
 
 
             card.setOnClickListener {
-                // TODO: Navigate to detail screen with:
-                // restaurant description, video presentation, images, review section, etc.
-
+                // TODO: Navigate to detail screen
             }
         }
     }
