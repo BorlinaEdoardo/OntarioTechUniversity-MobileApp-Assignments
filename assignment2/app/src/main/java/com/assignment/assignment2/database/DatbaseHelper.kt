@@ -28,11 +28,37 @@ class DatbaseHelper(context: Context): SQLiteOpenHelper(context, "locations.db",
     /// CRUD operations
 
     // Get all locations
+    fun getAllLocations(): List<Location> {
+        val locations = mutableListOf<Location>()
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM Locations", null)
+        while (cursor.moveToNext()) {
+            val location = Location.getFromCursor(cursor)
+            locations.add(location)
+        }
+        cursor.close()
 
+        return locations
+    }
 
     // Get Location by ID
+    fun getLocationById(id: Int): Location? {
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM Locations WHERE id = ?", arrayOf(id.toString()))
+        var location: Location? = null
+        if (cursor.moveToFirst()) {
+            location = Location.getFromCursor(cursor)
+        }
+        cursor.close()
+        return location
+    }
 
     // Add location
+    fun addLocation(location: Location) {
+        val db = writableDatabase
+        val values = location.toContentValues()
+        db.insert("Locations", null, values)
+    }
 
     // Update location
 
