@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="background_light">#F3F6FE</color>
+    <color name="title_background">#3f8096</color>
+    <color name="delete_button_color">#90E63F3F</color>
 </resources>
