@@ -100,6 +100,7 @@ class LocationAdapter : RecyclerView.Adapter<LocationAdapter.LocationVH>() {
                 val intent = android.content.Intent(context, MapActivity::class.java)
 
                 // pass the extra values to the intent
+                intent.putExtra("locationId", location.id)
                 intent.putExtra("address", location.address)
                 intent.putExtra("latitude", location.latitude)
                 intent.putExtra("longitude", location.longitude)
