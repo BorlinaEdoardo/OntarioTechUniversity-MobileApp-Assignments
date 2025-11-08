@@ -37,11 +37,11 @@ class MapActivity : AppCompatActivity() {
 
         // get view elements
         map = findViewById(R.id.map)
-        var idTextView: TextView = findViewById(R.id.idTextView)
-        var addressTextView: TextView = findViewById(R.id.addressEditText)
-        var latitudeTextView: TextView = findViewById(R.id.latitudeEditText)
-        var longitudeTextView: TextView = findViewById(R.id.longitudeEditText)
-        var backButton: Button = findViewById(R.id.backButton)
+        val idTextView: TextView = findViewById(R.id.idTextView)
+        val addressTextView: TextView = findViewById(R.id.addressEditText)
+        val latitudeTextView: TextView = findViewById(R.id.latitudeEditText)
+        val longitudeTextView: TextView = findViewById(R.id.longitudeEditText)
+        val backButton: Button = findViewById(R.id.backButton)
 
         // Get location data from intent
         locationId = intent.getIntExtra("locationId", -1)
