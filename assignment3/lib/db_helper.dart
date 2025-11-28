@@ -10,7 +10,7 @@ class DbHelper {
   static final DbHelper instance = DbHelper._internal();
 
   static const _dbName = 'food_orders.db';
-  static const _dbVersion = 1;
+  static const _dbVersion = 2;
   static const _tableOrders = 'orders';
   static const _tableProducts = 'products';
   static const _tableOrderItems = 'order_items';

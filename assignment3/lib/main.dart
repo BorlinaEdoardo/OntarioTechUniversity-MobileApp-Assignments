@@ -84,7 +84,18 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF4ECDC4),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _load,
+        onPressed: () async {
+          final res = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProductsPage()),
+          );
+
+          if (res is Order){
+            await _db.insertOrder(res);
+          }
+
+          _load();
+        },
         backgroundColor: const Color(0xFF4ECDC4),
         child: const Icon(Icons.add_shopping_cart),
       ),
@@ -175,18 +186,20 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 // ------------------------------------------------------------
-// ORDER PAGE
+// PRODUCTS PAGE
 // ------------------------------------------------------------
-class OrderPage extends StatefulWidget {
-  const OrderPage({super.key});
+class ProductsPage extends StatefulWidget {
+  const ProductsPage({super.key});
 
   @override
-  State<OrderPage> createState() => _OrderPageState();
+  State<ProductsPage> createState() => _ProductsPageState();
 }
 
-class _OrderPageState extends State<OrderPage>{
+class _ProductsPageState extends State<ProductsPage>{
   final DbHelper _db = DbHelper.instance;
   List<Product> _products = [];
+  final TextEditingController _maxPriceController = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -194,12 +207,142 @@ class _OrderPageState extends State<OrderPage>{
     _load();
   }
 
+  @override
+  void dispose() {
+    _maxPriceController.dispose();
+    super.dispose();
+  }
+
   Future<void> _load() async {
     _products = await _db.getAllProducts();
     setState(() {});
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Select Products'),
+        backgroundColor: const Color(0xFF4ECDC4),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFE9FDF7), Color(0xFFC8F4EF)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: () => _selectDate(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.calendar_today, color: Color(0xFF4ECDC4)),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Date: ${_selectedDate.toLocal().toString().split(' ')[0]}',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _maxPriceController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      hintText: 'Max Price',
+                      prefixIcon: const Icon(Icons.attach_money),
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: _products.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No products available',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: _products.length,
+                      itemBuilder: (context, i) {
+                        final product = _products[i];
+                        return Card(
+                          elevation: 3,
+                          margin: const EdgeInsets.only(bottom: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: const Color(0xFF4ECDC4),
+                              child: Text(
+                                product.name[0].toUpperCase(),
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            title: Text(
+                              product.name,
+                              style: const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                            trailing: Text(
+                              '\$${product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF4ECDC4),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
 }
 
