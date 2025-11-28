@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'db_helper.dart';
 import 'models/order.dart';
+import 'models/product.dart';
 
 void main() {
   runApp(const OrderApp());
@@ -69,11 +70,12 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {});
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Formato data non valido. Usa: YYYY-MM-DD')),
+        const SnackBar(content: Text('Invalid format. Use: YYYY-MM-DD')),
       );
     }
   }
 
+  // ------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ),
                             title: Text(
-                              'Budget: €${order.maxPrice.toStringAsFixed(2)}',
+                              'Budget: \$${order.maxPrice.toStringAsFixed(2)}',
                               style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                             subtitle: Text(
@@ -170,6 +172,35 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+}
+
+// ------------------------------------------------------------
+// ORDER PAGE
+// ------------------------------------------------------------
+class OrderPage extends StatefulWidget {
+  const OrderPage({super.key});
+
+  @override
+  State<OrderPage> createState() => _OrderPageState();
+}
+
+class _OrderPageState extends State<OrderPage>{
+  final DbHelper _db = DbHelper.instance;
+  List<Product> _products = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  Future<void> _load() async {
+    _products = await _db.getAllProducts();
+    setState(() {});
+  }
+
+
+
 }
 
 
