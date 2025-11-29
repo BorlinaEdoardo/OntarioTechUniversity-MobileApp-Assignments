@@ -76,6 +76,136 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _showOrderDetailsDialog(Order order) async {
+    final orderData = await _db.getOrderWithItems(order.id);
+    final items = orderData['items'] as List<Map<String, dynamic>>? ?? [];
+    final totalPrice = orderData['totalPrice'] as double? ?? 0.0;
+
+    if (!mounted) return;
+
+    final maxPriceController = TextEditingController(text: order.maxPrice.toString());
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Order #${order.id}'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Date: ${order.date.toLocal().toString().split(' ')[0]}',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: maxPriceController,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  labelText: 'Max Price',
+                  border: OutlineInputBorder(),
+                  prefixText: '\$',
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Items:',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              if (items.isEmpty)
+                const Text('No items in this order')
+              else
+                ...items.map((item) {
+                  final product = item['product'] as Product;
+                  final orderItem = item['orderItem'] as OrderItem;
+                  final itemTotal = item['itemTotal'] as double;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${product.name} x${orderItem.quantity}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                        ),
+                        Text(
+                          '\$${itemTotal.toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Total:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '\$${totalPrice.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF4ECDC4),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await _db.deleteOrder(order.id);
+              await _load();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final newMaxPrice = double.tryParse(maxPriceController.text);
+              if (newMaxPrice == null || newMaxPrice <= 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Invalid max price')),
+                );
+                return;
+              }
+
+              final updatedOrder = order.copyWith(maxPrice: newMaxPrice);
+              await _db.updateOrder(updatedOrder);
+              await _load();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Update'),
+          ),
+        ],
+      ),
+    );
+
+    maxPriceController.dispose();
+  }
+
   // ------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
@@ -168,7 +298,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                             trailing: const Icon(Icons.chevron_right),
-                            onTap: () {},
+                            onTap: () => _showOrderDetailsDialog(order),
                           ),
                         );
                       },
