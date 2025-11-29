@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'db_helper.dart';
 import 'models/order.dart';
+import 'models/order_item.dart';
 import 'models/product.dart';
 
 void main() {
@@ -85,15 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final res = await Navigator.push(
+          await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ProductsPage()),
           );
-
-          if (res is Order){
-            await _db.insertOrder(res);
-          }
-
           _load();
         },
         backgroundColor: const Color(0xFF4ECDC4),
@@ -201,6 +197,8 @@ class _ProductsPageState extends State<ProductsPage>{
   final TextEditingController _maxPriceController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
 
+  final Map<int, int> _cart = {};
+
   @override
   void initState() {
     super.initState();
@@ -232,12 +230,226 @@ class _ProductsPageState extends State<ProductsPage>{
     }
   }
 
+  void _addToCart(Product product) {
+    setState(() {
+      _cart[product.id] = (_cart[product.id] ?? 0) + 1;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${product.name} added to order'),
+        duration: const Duration(milliseconds: 500),
+      ),
+    );
+  }
+
+  double _calculateTotal() {
+    double total = 0;
+    for (var entry in _cart.entries) {
+      final product = _products.firstWhere((p) => p.id == entry.key);
+      total += product.price * entry.value;
+    }
+    return total;
+  }
+
+  Future<void> _confirmOrder() async {
+    if (_cart.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cart is empty')),
+      );
+      return;
+    }
+
+    final maxPrice = double.tryParse(_maxPriceController.text);
+    if (maxPrice == null || maxPrice <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter a valid max price')),
+      );
+      return;
+    }
+
+    // Check if total exceeds budget
+    final totalPrice = _calculateTotal();
+    if (totalPrice > maxPrice) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Total (\$${totalPrice.toStringAsFixed(2)}) exceeds budget (\$${maxPrice.toStringAsFixed(2)})'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Create the order
+    final order = Order(
+      id: 0,
+      maxPrice: maxPrice,
+      date: _selectedDate,
+    );
+
+    final orderId = await _db.insertOrder(order);
+
+    // Add order items
+    for (var entry in _cart.entries) {
+      final orderItem = OrderItem(
+        id: 0,
+        orderId: orderId,
+        productId: entry.key,
+        quantity: entry.value,
+      );
+      await _db.insertOrderItem(orderItem);
+    }
+
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  Future<void> _showAddProductDialog() async {
+    final nameController = TextEditingController();
+    final priceController = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Add Product'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Product Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: priceController,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(
+                labelText: 'Price',
+                border: OutlineInputBorder(),
+                prefixText: '\$',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final name = nameController.text.trim();
+              final price = double.tryParse(priceController.text);
+
+              if (name.isEmpty || price == null || price <= 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Invalid input')),
+                );
+                return;
+              }
+
+              final product = Product(id: 0, name: name, price: price);
+              await _db.insertProduct(product);
+              await _load();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showEditProductDialog(Product product) async {
+    final nameController = TextEditingController(text: product.name);
+    final priceController = TextEditingController(text: product.price.toString());
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Product'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: 'Product Name',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: priceController,
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              decoration: const InputDecoration(
+                labelText: 'Price',
+                border: OutlineInputBorder(),
+                prefixText: '\$',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await _db.deleteProduct(product.id);
+              await _load();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Delete'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final name = nameController.text.trim();
+              final price = double.tryParse(priceController.text);
+
+              if (name.isEmpty || price == null || price <= 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Invalid input')),
+                );
+                return;
+              }
+
+              final updatedProduct = product.copyWith(name: name, price: price);
+              await _db.updateProduct(updatedProduct);
+              await _load();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Update'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final totalPrice = _calculateTotal();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Products'),
         backgroundColor: const Color(0xFF4ECDC4),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddProductDialog,
+        backgroundColor: const Color(0xFF4ECDC4),
+        child: const Icon(Icons.add),
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -288,6 +500,57 @@ class _ProductsPageState extends State<ProductsPage>{
                       ),
                     ),
                   ),
+                  if (_cart.isNotEmpty) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Total:',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                '\$${totalPrice.toStringAsFixed(2)}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF4ECDC4),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: _confirmOrder,
+                              icon: const Icon(Icons.check_circle),
+                              label: Text('Confirm Order (${_cart.length} items)'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF4ECDC4),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -304,6 +567,8 @@ class _ProductsPageState extends State<ProductsPage>{
                       itemCount: _products.length,
                       itemBuilder: (context, i) {
                         final product = _products[i];
+                        final quantity = _cart[product.id] ?? 0;
+
                         return Card(
                           elevation: 3,
                           margin: const EdgeInsets.only(bottom: 12),
@@ -321,11 +586,36 @@ class _ProductsPageState extends State<ProductsPage>{
                                 ),
                               ),
                             ),
-                            title: Text(
-                              product.name,
-                              style: const TextStyle(fontWeight: FontWeight.w600),
+                            title: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    product.name,
+                                    style: const TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                if (quantity > 0)
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFF4ECDC4),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      'x$quantity',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                            trailing: Text(
+                            subtitle: Text(
                               '\$${product.price.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontSize: 16,
@@ -333,6 +623,11 @@ class _ProductsPageState extends State<ProductsPage>{
                                 color: Color(0xFF4ECDC4),
                               ),
                             ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.grey),
+                              onPressed: () => _showEditProductDialog(product),
+                            ),
+                            onTap: () => _addToCart(product),
                           ),
                         );
                       },
